@@ -2,6 +2,8 @@
 
 > **A clean, modern, and fully responsive website for Badnaam Lassi & Sweets House, the iconic sweet shop in Pilibhit, Uttar Pradesh.**
 
+🔗 **Live Website**: [https://kushinprogress.github.io/sweet-shop-site/](https://kushinprogress.github.io/sweet-shop-site/)
+
 ---
 
 ## 🌟 Overview
