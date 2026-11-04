@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" fill="none">
+  <g stroke="#D4AF37" stroke-width="1.2" opacity="0.35">
+    <circle cx="200" cy="200" r="180" stroke-dasharray="4 6" />
+    <circle cx="200" cy="200" r="160" />
+    <circle cx="200" cy="200" r="140" stroke-dasharray="2 4" />
+    <circle cx="200" cy="200" r="110" />
+    <circle cx="200" cy="200" r="80" />
+    <circle cx="200" cy="200" r="50" />
+    <circle cx="200" cy="200" r="25" fill="#D4AF37" fill-opacity="0.1" />
+
+    <!-- 8 Petals Radial Pattern -->
+    <path d="M200 40 Q215 110 200 150 Q185 110 200 40 Z" />
+    <path d="M200 360 Q215 290 200 250 Q185 290 200 360 Z" />
+    <path d="M40 200 Q110 215 150 200 Q110 185 40 200 Z" />
+    <path d="M360 200 Q290 215 250 200 Q290 185 360 200 Z" />
+    
+    <!-- Diagonal 4 Petals -->
+    <path d="M87 87 Q150 120 165 165 Q120 150 87 87 Z" />
+    <path d="M313 87 Q250 120 235 165 Q280 150 313 87 Z" />
+    <path d="M87 313 Q150 280 165 235 Q120 250 87 313 Z" />
+    <path d="M313 313 Q250 280 235 235 Q280 250 313 313 Z" />
+
+    <!-- Outer floral arches -->
+    <circle cx="200" cy="20" r="12" />
+    <circle cx="200" cy="380" r="12" />
+    <circle cx="20" cy="200" r="12" />
+    <circle cx="380" cy="200" r="12" />
+    <circle cx="73" cy="73" r="10" />
+    <circle cx="327" cy="73" r="10" />
+    <circle cx="73" cy="327" r="10" />
+    <circle cx="327" cy="327" r="10" />
+  </g>
+</svg>
