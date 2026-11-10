@@ -27,22 +27,29 @@ document.addEventListener('DOMContentLoaded', () => {
       backToTopBtn?.classList.remove('visible');
     }
 
-    // Scroll Spy for nav links
-    let currentId = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 140;
-      const sectionHeight = section.offsetHeight;
-      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-        currentId = section.getAttribute('id');
-      }
-    });
+    // Scroll Spy only for on-page hash navigation links
+    if (sections.length > 0) {
+      let currentId = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 140;
+        const sectionHeight = section.offsetHeight;
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          currentId = section.getAttribute('id');
+        }
+      });
 
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${currentId}`) {
-        link.classList.add('active');
+      if (currentId) {
+        const targetHashLink = document.querySelector(`.nav-link-ref[href="#${currentId}"]`);
+        if (targetHashLink) {
+          navLinks.forEach(link => {
+            if (link.getAttribute('href')?.startsWith('#')) {
+              link.classList.remove('active');
+            }
+          });
+          targetHashLink.classList.add('active');
+        }
       }
-    });
+    }
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
@@ -276,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
   orderDrawerClose?.addEventListener('click', closeOrderDrawer);
   orderDrawerBackdrop?.addEventListener('click', closeOrderDrawer);
 
-  document.querySelectorAll('.btn-add-order').forEach(btn => {
+  document.querySelectorAll('.btn-add-order, .add-to-cart-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const id = btn.getAttribute('data-id');

@@ -2339,3 +2339,218 @@ textarea.form-control {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Subpage Banners & Breadcrumbs (Multi-page Architecture)
+   ========================================================================== */
+.subpage-banner {
+  position: relative;
+  padding: calc(var(--header-height) + 3.5rem) 0 4.5rem 0;
+  background: 
+    linear-gradient(180deg, rgba(24, 9, 5, 0.88) 0%, rgba(24, 9, 5, 0.75) 50%, rgba(24, 9, 5, 0.95) 100%),
+    url('https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=2200&q=85');
+  background-size: cover;
+  background-position: center;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.subpage-banner-gifting {
+  background-image: 
+    linear-gradient(180deg, rgba(24, 9, 5, 0.88) 0%, rgba(24, 9, 5, 0.75) 50%, rgba(24, 9, 5, 0.95) 100%),
+    url('https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=2200&q=85');
+}
+
+.subpage-banner-stores {
+  background-image: 
+    linear-gradient(180deg, rgba(24, 9, 5, 0.88) 0%, rgba(24, 9, 5, 0.75) 50%, rgba(24, 9, 5, 0.95) 100%),
+    url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=2200&q=85');
+}
+
+.subpage-banner-explore {
+  background-image: 
+    linear-gradient(180deg, rgba(24, 9, 5, 0.88) 0%, rgba(24, 9, 5, 0.75) 50%, rgba(24, 9, 5, 0.95) 100%),
+    url('https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=2200&q=85');
+}
+
+.subpage-banner-contact {
+  background-image: 
+    linear-gradient(180deg, rgba(24, 9, 5, 0.88) 0%, rgba(24, 9, 5, 0.75) 50%, rgba(24, 9, 5, 0.95) 100%),
+    url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2200&q=85');
+}
+
+.subpage-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-gold-400);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.subpage-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.3rem, 4.2vw, 3.4rem);
+  color: #FFFFFF;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.subpage-desc {
+  font-size: 1.075rem;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 680px;
+  margin: 0 auto 1.5rem auto;
+  line-height: 1.7;
+}
+
+.breadcrumb-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.breadcrumb-nav a {
+  color: var(--color-gold-300);
+  font-weight: 600;
+}
+
+.breadcrumb-nav a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-sep {
+  opacity: 0.5;
+}
+
+/* Subpage Callout Cards on Home */
+.home-subpages-preview {
+  padding: 6.5rem 0;
+  background-color: var(--color-cream-200);
+}
+
+.subpage-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+.subpage-preview-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  color: inherit;
+}
+
+.subpage-preview-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-gold-400);
+}
+
+.preview-card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.preview-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.subpage-preview-card:hover .preview-card-img-wrap img {
+  transform: scale(1.08);
+}
+
+.preview-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, var(--color-gold-500) 0%, var(--color-gold-700) 100%);
+  color: var(--color-maroon-900);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+}
+
+.preview-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.preview-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-maroon-800);
+  margin-bottom: 0.4rem;
+}
+
+.preview-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+
+.preview-card-link {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-maroon-700);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: gap var(--transition-fast);
+}
+
+.subpage-preview-card:hover .preview-card-link {
+  color: var(--color-gold-700);
+  gap: 0.65rem;
+}
+
+@media (max-width: 1080px) {
+  .subpage-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .subpage-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Subpage Content Helper Classes */
+.guide-two-col {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .guide-two-col {
+    grid-template-columns: 1fr;
+  }
+  .guide-two-col > div:last-child {
+    min-height: 260px;
+    height: 260px;
+  }
+}
+
