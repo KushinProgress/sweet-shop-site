@@ -2554,3 +2554,574 @@ textarea.form-control {
   }
 }
 
+/* ==========================================================================
+   Table QR Ordering & Live Kitchen Preparation Tracker
+   ========================================================================== */
+.table-order-header {
+  background: linear-gradient(135deg, var(--color-brown-950) 0%, var(--color-maroon-950) 100%);
+  color: #FFFFFF;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--color-gold-500);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+.table-order-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.table-badge-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--color-gold-400);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-gold-300);
+}
+
+.table-pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-green 1.8s infinite;
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.dinein-table-selector-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  text-align: center;
+  max-width: 680px;
+  margin: 2rem auto;
+}
+
+.table-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.table-chip-btn {
+  background: var(--color-cream-100);
+  border: 1.5px solid var(--color-cream-300);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-maroon-800);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.table-chip-btn:hover, .table-chip-btn.active {
+  background: var(--color-maroon-800);
+  color: #FFFFFF;
+  border-color: var(--color-maroon-800);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.table-menu-sticky-tabs {
+  position: sticky;
+  top: 70px;
+  z-index: 90;
+  background: #FAF6F0;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.table-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 0 6rem 0;
+}
+
+.table-item-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.table-item-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-gold-400);
+}
+
+.table-item-thumb {
+  width: 105px;
+  height: 105px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.table-item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.table-item-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.table-item-name {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-maroon-900);
+  margin-bottom: 0.2rem;
+}
+
+.table-item-hindi {
+  font-size: 0.8rem;
+  color: var(--color-gold-700);
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.table-item-desc {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 0.75rem;
+  flex-grow: 1;
+}
+
+.table-item-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.table-item-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-maroon-700);
+}
+
+.table-qty-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--color-gold-500);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: #FFF;
+}
+
+.table-qty-btn {
+  background: transparent;
+  border: none;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-maroon-800);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+
+.table-qty-btn:hover {
+  background: var(--color-gold-100);
+}
+
+.table-qty-count {
+  min-width: 24px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-maroon-900);
+}
+
+/* Sticky Bottom Table Action Bar */
+.table-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, var(--color-brown-950) 0%, var(--color-maroon-950) 100%);
+  color: #FFFFFF;
+  padding: 1rem 1.5rem;
+  border-top: 2px solid var(--color-gold-500);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.25);
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateY(110%);
+  transition: transform var(--transition-normal);
+}
+
+.table-bottom-bar.visible {
+  transform: translateY(0);
+}
+
+.table-bottom-summary {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.table-bottom-items {
+  font-size: 0.85rem;
+  color: var(--color-cream-300);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table-bottom-total {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-gold-300);
+}
+
+/* Table Checkout Modal */
+.table-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-fast);
+}
+
+.table-modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.table-modal-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  background: #FFFFFF;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  box-shadow: var(--shadow-xl);
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform var(--transition-normal);
+}
+
+.table-modal-sheet.active {
+  transform: translate(-50%, 0);
+}
+
+.table-modal-header {
+  padding: 1.25rem 1.5rem;
+  background: var(--color-cream-100);
+  border-bottom: 1px solid var(--color-cream-300);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-maroon-800);
+}
+
+.table-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.925rem;
+  color: var(--text-secondary);
+}
+
+.bill-row.total-row {
+  border-top: 2px dashed var(--color-cream-300);
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-maroon-900);
+}
+
+.pay-method-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.pay-tab-btn {
+  border: 1.5px solid var(--color-cream-300);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  text-align: center;
+  background: #FFF;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.pay-tab-btn.active {
+  border-color: var(--color-gold-500);
+  background: var(--color-gold-100);
+  color: var(--color-maroon-900);
+}
+
+.upi-qr-box {
+  background: var(--color-cream-50);
+  border: 1px solid var(--color-cream-300);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.upi-qr-img {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 0.75rem auto;
+  background: #FFF;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: block;
+}
+
+/* ==========================================================================
+   Live Kitchen Preparation Tracker Screen
+   ========================================================================== */
+.kitchen-tracker-wrap {
+  background: #FFFFFF;
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem;
+  border: 2px solid var(--color-gold-400);
+  box-shadow: var(--shadow-xl);
+  max-width: 640px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.order-success-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #ECFDF5;
+  color: #10B981;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.order-success-icon svg {
+  width: 36px;
+  height: 36px;
+  fill: currentColor;
+}
+
+.prep-countdown-card {
+  background: linear-gradient(135deg, var(--color-brown-950) 0%, var(--color-maroon-950) 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  margin: 1.75rem 0;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.prep-time-display {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--color-gold-400);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.prep-time-sub {
+  font-size: 0.95rem;
+  color: var(--color-cream-200);
+  font-weight: 500;
+}
+
+.prep-progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.prep-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold-500) 0%, #10B981 100%);
+  border-radius: var(--radius-full);
+  transition: width 1s linear;
+  width: 10%;
+}
+
+/* Stepper */
+.kitchen-stepper {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 2.25rem 0 1.5rem 0;
+}
+
+.kitchen-stepper::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: var(--color-cream-300);
+  z-index: 1;
+}
+
+.step-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-cream-200);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  border: 2px solid #FFF;
+  transition: all var(--transition-fast);
+}
+
+.step-node.completed .step-circle {
+  background: #10B981;
+  color: #FFF;
+}
+
+.step-node.active .step-circle {
+  background: var(--color-gold-500);
+  color: var(--color-maroon-950);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.35);
+  animation: pulse-step 1.6s infinite;
+}
+
+@keyframes pulse-step {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.step-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.step-node.active .step-label {
+  color: var(--color-maroon-900);
+}
+
+/* Printable Table Stand Card */
+.table-stand-preview {
+  background: #FAF6F0;
+  border: 3px solid var(--color-gold-600);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 360px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-lg);
+  color: var(--color-maroon-900);
+}
+
+.table-stand-number {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--color-maroon-800);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printableStandArea, #printableStandArea * {
+    visibility: visible;
+  }
+  #printableStandArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+}
+
+

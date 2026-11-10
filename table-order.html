@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dine-In Table Order &amp; Live Kitchen Tracker | Badnaam Lassi Pilibhit</title>
+  
+  <meta name="description" content="Scan the QR code at your table to order fresh Kulhad Rabdi Lassi, Desi Ghee Jalebi, and snacks. Pay via UPI and watch your order preparation time live.">
+  <meta name="author" content="Badnaam Lassi & Sweets House">
+  <link rel="canonical" href="https://badnaamlassipilibhit.com/table-order.html">
+
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background-color: var(--color-cream-100);">
+
+  <!-- Sticky Dine-In Header -->
+  <header class="table-order-header">
+    <div class="container table-order-header-inner">
+      <a href="index.html" class="brand-logo-ref" style="text-decoration: none;">
+        <span class="brand-since-tag" style="color: var(--color-gold-400);">SINCE 1978</span>
+        <span class="brand-title-serif" style="color: #FFFFFF; font-size: 1.45rem;">badnaam<span>.</span></span>
+        <span class="brand-sub-spaced" style="color: var(--color-gold-300);">DINE-IN SERVICE</span>
+      </a>
+
+      <!-- Active Table Badge & Switcher -->
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="table-badge-indicator" id="tableBadge">
+          <span class="table-pulse-dot"></span>
+          <span id="activeTableText">Table #04</span>
+        </div>
+
+        <button type="button" class="btn btn-outline" id="switchTableBtn" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-color: rgba(212,175,55,0.4); color: var(--color-cream-200);" title="Switch or Change Table">
+          Change
+        </button>
+
+        <button type="button" class="btn btn-gold" id="openQrStandBtn" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" title="View or Print Table QR Stands">
+          QR Stands
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 5rem;">
+
+    <!-- Table Selection Prompt (Shown if no table selected or user clicks 'Change') -->
+    <div class="dinein-table-selector-card" id="tableSelectCard" style="display: none;">
+      <span class="section-tag">DINE-IN AT STORE</span>
+      <h2 style="font-family: var(--font-heading); color: var(--color-maroon-800); font-size: 1.6rem; margin-bottom: 0.5rem;">
+        Welcome! Which Table Are You Seated At?
+      </h2>
+      <p style="font-size: 0.875rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto 1.25rem;">
+        Select your table number below (check the acrylic QR stand on your table), or scan the QR code directly with your phone camera.
+      </p>
+
+      <div class="table-chips-grid" id="tableChipsGrid">
+        <!-- Generated dynamically via JS for tables 1 to 12 -->
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+        <button type="button" class="btn btn-primary" id="confirmTableSelectBtn" style="padding: 0.65rem 1.5rem;">
+          Continue to Menu &rarr;
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Order Tracker View (Shown after payment confirmation) -->
+    <div class="kitchen-tracker-wrap" id="kitchenTrackerView" style="display: none;">
+      <div class="order-success-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>
+
+      <span class="item-tag" style="background: #ECFDF5; color: #047857; font-weight: 800; border: 1px solid #A7F3D0; margin-bottom: 0.5rem;">
+        ✓ ORDER CONFIRMED &amp; SENT TO KITCHEN
+      </span>
+
+      <h2 style="font-family: var(--font-heading); color: var(--color-maroon-900); font-size: 1.85rem; margin-bottom: 0.25rem;">
+        Order <span id="confirmedOrderId">#BL-8492</span>
+      </h2>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Serving to <strong id="confirmedTableLabel" style="color: var(--color-maroon-800);">Table #04</strong> &bull; Paid via <span id="confirmedPayMethod" style="font-weight: 700; color: #047857;">UPI</span>
+      </p>
+
+      <!-- Live Preparation Countdown Timer -->
+      <div class="prep-countdown-card">
+        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-gold-400); font-weight: 700; margin-bottom: 0.5rem;">
+          Estimated Preparation Time
+        </div>
+        <div class="prep-time-display" id="prepTimerDisplay">11:54</div>
+        <div class="prep-time-sub" id="prepStatusMessage">
+          🍳 Master Halwai is preparing your fresh order in the kadhai...
+        </div>
+
+        <div class="prep-progress-bar-bg">
+          <div class="prep-progress-bar-fill" id="prepProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- 4-Stage Visual Kitchen Stepper -->
+      <div class="kitchen-stepper" id="kitchenStepper">
+        <div class="step-node completed" id="step1">
+          <div class="step-circle">✓</div>
+          <span class="step-label">Order<br>Received</span>
+        </div>
+        <div class="step-node active" id="step2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Fresh Prep<br>in Kadai</span>
+        </div>
+        <div class="step-node" id="step3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Plating &amp;<br>Garnish</span>
+        </div>
+        <div class="step-node" id="step4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Served to<br>Table</span>
+        </div>
+      </div>
+
+      <!-- Itemized Order Summary for Kitchen Tracking -->
+      <div style="background: var(--color-cream-50); border: 1px solid var(--color-cream-300); border-radius: var(--radius-lg); padding: 1.25rem; margin: 1.5rem 0; text-align: left;">
+        <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--color-maroon-800); margin-bottom: 0.75rem; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
+          <span>Items Ordered</span>
+          <span id="trackerTotalAmount" style="color: var(--color-maroon-900); font-weight: 800;">₹0</span>
+        </div>
+        <div id="trackerItemsList" style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6;">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; justify-content: center;">
+        <button type="button" class="btn btn-whatsapp" id="sendKitchenSlipWhatsAppBtn" style="padding: 0.75rem 1.25rem; font-size: 0.875rem;">
+          💬 Send Slip to WhatsApp
+        </button>
+        <button type="button" class="btn btn-outline" id="callWaiterBtn" style="padding: 0.75rem 1.25rem; font-size: 0.875rem;">
+          🔔 Call Table Attendant
+        </button>
+        <button type="button" class="btn btn-primary" id="orderMoreItemsBtn" style="padding: 0.75rem 1.25rem; font-size: 0.875rem;">
+          + Order More Delicacies
+        </button>
+      </div>
+
+      <div id="waiterAlertNote" style="display: none; margin-top: 1rem; padding: 0.75rem; background: #FEF3C7; color: #92400E; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600;">
+        🔔 Waiter notified for Table <span id="alertTableNum">4</span>! An attendant is walking over with water.
+      </div>
+    </div>
+
+    <!-- Digital Table Menu Section (Shown for browsing & ordering) -->
+    <div id="tableMenuSection">
+      <!-- Table Welcome Banner -->
+      <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid rgba(212, 175, 55, 0.25); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-gold-700);">Dine-In Digital Counter</span>
+          <h1 style="font-family: var(--font-heading); color: var(--color-maroon-800); font-size: 1.5rem; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+            Order from <span id="currentTableTitle" style="color: var(--color-gold-700);">Table #04</span>
+          </h1>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            Station Road Flagship Counter &bull; Fresh items will be served hot right to your table.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center;">
+          <span class="cert-item" style="font-size: 0.75rem;">100% Pure Desi Ghee</span>
+          <span class="cert-item" style="font-size: 0.75rem;">Instant UPI</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="menu-tabs" role="tablist" style="margin-bottom: 1.5rem;">
+        <button type="button" class="menu-tab-btn active table-cat-tab" data-cat="all">All Items (सभी)</button>
+        <button type="button" class="table-cat-tab menu-tab-btn" data-cat="lassi">Kulhad Lassi (लस्सी)</button>
+        <button type="button" class="table-cat-tab menu-tab-btn" data-cat="snacks">Hot Snacks (गरम नाश्ता)</button>
+        <button type="button" class="table-cat-tab menu-tab-btn" data-cat="sweets">Fresh Mithai (मिष्ठान)</button>
+      </div>
+
+      <!-- Menu Items Grid -->
+      <div class="table-menu-grid" id="tableMenuGrid">
+        <!-- 1. Badnaam Kulhad Rabdi Lassi -->
+        <article class="table-item-card" data-cat="lassi">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80" alt="Badnaam Kulhad Rabdi Lassi" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;" title="100% Pure Veg"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Badnaam Kulhad Rabdi Lassi</h3>
+            <span class="table-item-hindi">बदनाम कुल्हड़ रबड़ी लस्सी</span>
+            <p class="table-item-desc">
+              Churned buffalo curd topped with a thick crown of malai rabdi, saffron syrup, and chopped pistachios in an earthen kulhad.
+            </p>
+            <div style="font-size: 0.75rem; color: #047857; font-weight: 700; margin-bottom: 0.4rem;">⚡ Ready in ~4 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹60</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-lassi-rabdi" data-name="Badnaam Kulhad Rabdi Lassi" data-price="60" data-preptime="4">−</button>
+                <span class="table-qty-count" id="qty-ti-lassi-rabdi">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-lassi-rabdi" data-name="Badnaam Kulhad Rabdi Lassi" data-price="60" data-preptime="4">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. Kesar Pista Badam Lassi -->
+        <article class="table-item-card" data-cat="lassi">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=400&q=80" alt="Kesar Pista Badam Lassi" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Kesar Pista Badam Lassi</h3>
+            <span class="table-item-hindi">केसर पिस्ता बादाम लस्सी</span>
+            <p class="table-item-desc">
+              Infused with Kashmiri saffron, almond slivers, crushed pistachios, and rich cardamom cream.
+            </p>
+            <div style="font-size: 0.75rem; color: #047857; font-weight: 700; margin-bottom: 0.4rem;">⚡ Ready in ~4 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹70</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-lassi-kesar" data-name="Kesar Pista Badam Lassi" data-price="70" data-preptime="4">−</button>
+                <span class="table-qty-count" id="qty-ti-lassi-kesar">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-lassi-kesar" data-name="Kesar Pista Badam Lassi" data-price="70" data-preptime="4">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. Rose Petal Malai Lassi -->
+        <article class="table-item-card" data-cat="lassi">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80" alt="Rose Petal Malai Lassi" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Rose Petal Malai Lassi</h3>
+            <span class="table-item-hindi">गुलाब मलाई लस्सी</span>
+            <p class="table-item-desc">
+              Organic edible Damask rose petals, aromatic gulab ark, and chilled rabdi lassi served in baked clay.
+            </p>
+            <div style="font-size: 0.75rem; color: #047857; font-weight: 700; margin-bottom: 0.4rem;">⚡ Ready in ~4 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹65</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-lassi-rose" data-name="Rose Petal Malai Lassi" data-price="65" data-preptime="4">−</button>
+                <span class="table-qty-count" id="qty-ti-lassi-rose">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-lassi-rose" data-name="Rose Petal Malai Lassi" data-price="65" data-preptime="4">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. Desi Ghee Jalebi (Plate) -->
+        <article class="table-item-card" data-cat="snacks">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=400&q=80" alt="Desi Ghee Jalebi" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Desi Ghee Jalebi (Hot Plate)</h3>
+            <span class="table-item-hindi">शुद्ध देसी घी गरम जलेबी</span>
+            <p class="table-item-desc">
+              Crisp golden spirals fried in pure desi ghee, soaked in warm saffron syrup, served hot straight from the kadhai (150g).
+            </p>
+            <div style="font-size: 0.75rem; color: #B45309; font-weight: 700; margin-bottom: 0.4rem;">🔥 Fresh Kadai: ~8 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹70</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-snack-jalebi" data-name="Desi Ghee Jalebi Plate" data-price="70" data-preptime="8">−</button>
+                <span class="table-qty-count" id="qty-ti-snack-jalebi">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-snack-jalebi" data-name="Desi Ghee Jalebi Plate" data-price="70" data-preptime="8">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. Kadhai Samosa with Pilibhit Chole (2 Pcs) -->
+        <article class="table-item-card" data-cat="snacks">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80" alt="Kadhai Samosa with Chole" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Kadhai Samosa &amp; Chole (2 Pcs)</h3>
+            <span class="table-item-hindi">समोसा छोले चाट</span>
+            <p class="table-item-desc">
+              Crisp flaky pastry stuffed with cumin spiced potatoes and cashews, topped with tangy Amritsari chole, imli chutney &amp; sev.
+            </p>
+            <div style="font-size: 0.75rem; color: #B45309; font-weight: 700; margin-bottom: 0.4rem;">🔥 Fresh Kadai: ~6 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹50</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-snack-samosa" data-name="Kadhai Samosa & Chole (2 Pcs)" data-price="50" data-preptime="6">−</button>
+                <span class="table-qty-count" id="qty-ti-snack-samosa">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-snack-samosa" data-name="Kadhai Samosa & Chole (2 Pcs)" data-price="50" data-preptime="6">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6. Bedmi Puri & Hing Aloo Sabzi (4 Puris) -->
+        <article class="table-item-card" data-cat="snacks">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80" alt="Bedmi Puri Sabzi" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Bedmi Puri &amp; Hing Aloo (4 Puris)</h3>
+            <span class="table-item-hindi">बेड़मी पूरी एवं हींग आलू सब्ज़ी</span>
+            <p class="table-item-desc">
+              Crisp urad dal stuffed wheat puris served with piping hot spiced potato curry, fenugreek methi chutney, and green chili pickle.
+            </p>
+            <div style="font-size: 0.75rem; color: #B45309; font-weight: 700; margin-bottom: 0.4rem;">🔥 Fresh Platter: ~10 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹80</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-snack-bedmi" data-name="Bedmi Puri & Hing Aloo Platter" data-price="80" data-preptime="10">−</button>
+                <span class="table-qty-count" id="qty-ti-snack-bedmi">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-snack-bedmi" data-name="Bedmi Puri & Hing Aloo Platter" data-price="80" data-preptime="10">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7. Pilibhit Doodh Peda (250g Box) -->
+        <article class="table-item-card" data-cat="sweets">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=400&q=80" alt="Pilibhit Doodh Peda" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Pilibhit Doodh Peda (250g)</h3>
+            <span class="table-item-hindi">पीलीभीत का प्रसिद्ध खोया पेड़ा</span>
+            <p class="table-item-desc">
+              Prepared by slow-simmering buffalo milk for 5 hours until caramelized to a mahogany brown, hand-pressed with green cardamom.
+            </p>
+            <div style="font-size: 0.75rem; color: #047857; font-weight: 700; margin-bottom: 0.4rem;">⚡ Instant Box: ~2 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹130</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-sweet-peda" data-name="Pilibhit Doodh Peda (250g)" data-price="130" data-preptime="2">−</button>
+                <span class="table-qty-count" id="qty-ti-sweet-peda">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-sweet-peda" data-name="Pilibhit Doodh Peda (250g)" data-price="130" data-preptime="2">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 8. Hot Desi Ghee Gulab Jamun (2 Pcs) -->
+        <article class="table-item-card" data-cat="sweets">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&w=400&q=80" alt="Gulab Jamun" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Hot Gulab Jamun (2 Pcs)</h3>
+            <span class="table-item-hindi">गरमा-गरम गुलाब जामुन</span>
+            <p class="table-item-desc">
+              Soft melt-in-mouth mawa dumplings slow fried in pure desi ghee, soaked in rose cardamom sugar syrup, served warm in earthenware.
+            </p>
+            <div style="font-size: 0.75rem; color: #047857; font-weight: 700; margin-bottom: 0.4rem;">⚡ Warm Bowl: ~3 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹50</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-sweet-jamun" data-name="Hot Gulab Jamun (2 Pcs)" data-price="50" data-preptime="3">−</button>
+                <span class="table-qty-count" id="qty-ti-sweet-jamun">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-sweet-jamun" data-name="Hot Gulab Jamun (2 Pcs)" data-price="50" data-preptime="3">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 9. Kesar Rasmalai (2 Pcs) -->
+        <article class="table-item-card" data-cat="sweets">
+          <div class="table-item-thumb">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80" alt="Kesar Rasmalai" loading="lazy">
+            <span class="badge-veg" style="position: absolute; bottom: 6px; left: 6px;"><span class="badge-veg-dot"></span></span>
+          </div>
+          <div class="table-item-content">
+            <h3 class="table-item-name">Kesar Angoori Rasmalai (2 Pcs)</h3>
+            <span class="table-item-hindi">केसर रसमलाई</span>
+            <p class="table-item-desc">
+              Spongy cottage cheese patties poached in sweetened saffron thickened milk, garnished with pistachio and silver foil.
+            </p>
+            <div style="font-size: 0.75rem; color: #047857; font-weight: 700; margin-bottom: 0.4rem;">⚡ Chilled Bowl: ~3 mins</div>
+            <div class="table-item-foot">
+              <span class="table-item-price">₹70</span>
+              <div class="table-qty-selector">
+                <button type="button" class="table-qty-btn table-minus" data-id="ti-sweet-rasmalai" data-name="Kesar Rasmalai (2 Pcs)" data-price="70" data-preptime="3">−</button>
+                <span class="table-qty-count" id="qty-ti-sweet-rasmalai">0</span>
+                <button type="button" class="table-qty-btn table-plus" data-id="ti-sweet-rasmalai" data-name="Kesar Rasmalai (2 Pcs)" data-price="70" data-preptime="3">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Bar for Dine-In Checkout -->
+  <div class="table-bottom-bar" id="tableBottomBar">
+    <div class="table-bottom-summary">
+      <div>
+        <div class="table-bottom-items" id="barItemCount">0 Items &bull; Table #04</div>
+        <div class="table-bottom-total" id="barTotalPrice">₹0</div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-gold" id="openCheckoutModalBtn" style="font-weight: 800; font-size: 0.95rem; padding: 0.75rem 1.5rem;">
+      View Bill &amp; Pay &rarr;
+    </button>
+  </div>
+
+  <!-- Table Checkout & UPI Payment Modal -->
+  <div class="table-modal-backdrop" id="checkoutBackdrop"></div>
+  <div class="table-modal-sheet" id="checkoutSheet">
+    <div class="table-modal-header">
+      <div>
+        <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-gold-700); text-transform: uppercase;">Dine-In Billing</span>
+        <h3 class="table-modal-title">Table Bill &amp; Payment</h3>
+      </div>
+      <button type="button" class="modal-close-btn" id="closeCheckoutBtn" style="background:none; border:none; font-size: 1.5rem; cursor:pointer; color: var(--color-maroon-800);">&times;</button>
+    </div>
+
+    <div class="table-modal-body">
+      <!-- Seated Table Banner -->
+      <div style="background: var(--color-gold-100); border: 1px solid var(--color-gold-300); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <span style="font-weight: 700; color: var(--color-maroon-900); font-size: 0.95rem;" id="modalTableNumber">Table #04 (Dine-In)</span>
+        <span style="font-size: 0.8rem; color: #047857; font-weight: 700;">✓ Kitchen Active</span>
+      </div>
+
+      <!-- Itemized Bill List -->
+      <div id="checkoutBillItems" style="margin-bottom: 1rem;">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Subtotal, Tax & Total -->
+      <div class="bill-row">
+        <span>Item Total:</span>
+        <span id="billSubtotal">₹0</span>
+      </div>
+      <div class="bill-row">
+        <span>GST (5% Restaurant):</span>
+        <span id="billGst">₹0</span>
+      </div>
+      <div class="bill-row total-row">
+        <span>Total Payable:</span>
+        <span id="billGrandTotal" style="color: var(--color-maroon-800);">₹0</span>
+      </div>
+
+      <!-- Payment Method Selection -->
+      <div style="margin-top: 1.5rem;">
+        <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-maroon-800); display: block; margin-bottom: 0.5rem;">
+          Select Payment Method:
+        </label>
+        <div class="pay-method-tabs">
+          <button type="button" class="pay-tab-btn active" id="payMethodUpiBtn" onclick="selectPayMethod('UPI')">
+            📱 Pay via Instant UPI
+          </button>
+          <button type="button" class="pay-tab-btn" id="payMethodCashBtn" onclick="selectPayMethod('Cash/Counter')">
+            💵 Pay Cash to Waiter
+          </button>
+        </div>
+      </div>
+
+      <!-- UPI QR Code Display Section -->
+      <div class="upi-qr-box" id="upiQrSection">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-gold-700); letter-spacing: 0.05em; display: block; margin-bottom: 0.4rem;">
+          Scan with Any UPI App
+        </span>
+        <!-- Real dynamic UPI QR code rendered via SVG/image API -->
+        <img src="" id="dynamicUpiQr" alt="Scan to Pay via UPI" class="upi-qr-img">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-maroon-900);">
+          UPI ID: <span style="color: var(--color-maroon-700);">badnaamlassi@upi</span>
+        </div>
+        <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0.25rem 0 0.75rem 0;">
+          Google Pay &bull; PhonePe &bull; Paytm &bull; BHIM &bull; CRED
+        </p>
+
+        <!-- UPI Deep Link Intent for Mobile Browsers -->
+        <a href="#" id="upiIntentLink" class="btn" style="background: #1B8057; color: #FFF; font-size: 0.85rem; padding: 0.6rem 1.25rem; width: 100%; border-radius: var(--radius-md); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none;">
+          <span>📱 Open UPI App on this Phone</span>
+        </a>
+      </div>
+
+      <!-- Cash / Counter Note -->
+      <div id="cashNoteSection" style="display: none; background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--radius-md); padding: 1rem; margin: 1rem 0; font-size: 0.85rem; color: #92400E;">
+        ℹ️ Please keep cash or card ready. Our table captain will collect payment at your table once the order is placed.
+      </div>
+
+      <!-- Optional Phone/Name Input for SMS slip -->
+      <div style="margin: 1.25rem 0 0.5rem 0;">
+        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;" for="guestContact">
+          Mobile Number (for WhatsApp / SMS Kitchen Token):
+        </label>
+        <input type="tel" id="guestContact" placeholder="+91 98765 43210 (optional)" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-cream-300); border-radius: var(--radius-md); font-size: 0.875rem;">
+      </div>
+    </div>
+
+    <!-- Modal Footer Action -->
+    <div style="padding: 1rem 1.5rem; background: var(--color-cream-50); border-top: 1px solid var(--color-cream-300);">
+      <button type="button" class="btn btn-primary" id="confirmOrderAndPayBtn" style="width: 100%; font-size: 1rem; padding: 0.85rem;">
+        Confirm &amp; Send to Kitchen (<span id="payBtnAmount">₹0</span>) &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- Printable Table QR Stand Modal -->
+  <div class="table-modal-backdrop" id="qrStandBackdrop"></div>
+  <div class="table-modal-sheet" id="qrStandSheet">
+    <div class="table-modal-header">
+      <h3 class="table-modal-title">Table Acrylic QR Stand Generator</h3>
+      <button type="button" class="modal-close-btn" id="closeQrStandBtn" style="background:none; border:none; font-size: 1.5rem; cursor:pointer; color: var(--color-maroon-800);">&times;</button>
+    </div>
+
+    <div class="table-modal-body" style="text-align: center;">
+      <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+        Select a table number to generate the scannable stand card. Print this on acrylic stands or test scan it right now!
+      </p>
+
+      <div style="display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+        <label for="standTableSelect" style="font-weight: 700; color: var(--color-maroon-800); font-size: 0.9rem;">Table:</label>
+        <select id="standTableSelect" style="padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-gold-400); font-weight: 700; background: #FFF;">
+          <!-- 1 to 12 -->
+          <option value="1">Table #01</option>
+          <option value="2">Table #02</option>
+          <option value="3">Table #03</option>
+          <option value="4" selected>Table #04 (Selected)</option>
+          <option value="5">Table #05</option>
+          <option value="6">Table #06</option>
+          <option value="7">Table #07</option>
+          <option value="8">Table #08</option>
+          <option value="9">Table #09</option>
+          <option value="10">Table #10</option>
+          <option value="11">Table #11</option>
+          <option value="12">Table #12</option>
+        </select>
+      </div>
+
+      <!-- Printable Acrylic Stand Preview -->
+      <div id="printableStandArea" class="table-stand-preview">
+        <div style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.15em; color: var(--color-gold-700); text-transform: uppercase;">
+          SINCE 1978 &bull; PILIBHIT
+        </div>
+        <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--color-maroon-800); margin: 0.2rem 0;">
+          badnaam<span style="color: var(--color-gold-600);">.</span>
+        </div>
+        <div style="font-size: 0.75rem; letter-spacing: 0.12em; color: var(--color-brown-700); font-weight: 700; margin-bottom: 1rem;">
+          LASSI &amp; SWEETS HOUSE
+        </div>
+
+        <div class="table-stand-number" id="standDisplayNum">Table #04</div>
+        <div style="font-size: 0.85rem; font-weight: 700; color: #047857; margin-bottom: 1rem;">
+          ⚡ SCAN TO ORDER &amp; PAY
+        </div>
+
+        <!-- Generated QR Code Image -->
+        <div style="background: #FFF; padding: 12px; border-radius: var(--radius-md); display: inline-block; box-shadow: var(--shadow-sm); border: 1px solid rgba(212,175,55,0.4);">
+          <img src="" id="standQrImg" alt="Table QR Code" style="width: 170px; height: 170px; display: block;">
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 1rem; line-height: 1.4;">
+          1. Scan with Camera &bull; 2. Select Items<br>3. Pay via UPI &bull; 4. Served to Table
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+        <button type="button" class="btn btn-primary" onclick="simulateScanSelectedTable()" style="padding: 0.65rem 1.25rem; font-size: 0.85rem;">
+          📲 Test Scan This Table
+        </button>
+        <button type="button" class="btn btn-outline" onclick="window.print()" style="padding: 0.65rem 1.25rem; font-size: 0.85rem;">
+          🖨️ Print Stand Card
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Chime for Order Completion (Web Audio API) -->
+  <script src="js/table-order.js"></script>
+</body>
+</html>
