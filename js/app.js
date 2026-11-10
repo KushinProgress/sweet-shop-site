@@ -1,38 +1,36 @@
 /**
  * Badnaam Lassi & Sweets House - Pilibhit, Uttar Pradesh
- * High-performance vanilla JavaScript for interactions, cart & animations
+ * Interactive JavaScript for Header Dropdowns, Cart, Audio Ambience & Modals
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   // --- 1. Sticky Header & Scroll Spy ---
-  const header = document.querySelector('.main-header');
-  const navLinks = document.querySelectorAll('.nav-link');
+  const header = document.getElementById('mainHeader');
+  const navLinks = document.querySelectorAll('.nav-link-ref');
   const sections = document.querySelectorAll('section[id]');
   const backToTopBtn = document.getElementById('backToTopBtn');
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
 
-    // Header styling on scroll
-    if (scrollY > 40) {
+    if (scrollY > 50) {
       header?.classList.add('scrolled');
     } else {
       header?.classList.remove('scrolled');
     }
 
-    // Back to top button visibility
     if (scrollY > 400) {
       backToTopBtn?.classList.add('visible');
     } else {
       backToTopBtn?.classList.remove('visible');
     }
 
-    // Active Section Scroll Spy
+    // Scroll Spy for nav links
     let currentId = '';
     sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120;
+      const sectionTop = section.offsetTop - 140;
       const sectionHeight = section.offsetHeight;
       if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
         currentId = section.getAttribute('id');
@@ -77,7 +75,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   mobileNavLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
 
-  // --- 3. Scroll Reveal Animations (IntersectionObserver) ---
+  // --- 3. Explore Dropdown Toggle for Mobile / Touch ---
+  const navItemDropdown = document.querySelector('.nav-item-dropdown');
+  const exploreTrigger = document.getElementById('exploreTrigger');
+
+  exploreTrigger?.addEventListener('click', (e) => {
+    if (window.innerWidth <= 1080) {
+      e.preventDefault();
+      navItemDropdown?.classList.toggle('open');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (navItemDropdown && !navItemDropdown.contains(e.target)) {
+      navItemDropdown.classList.remove('open');
+    }
+  });
+
+  // --- 4. Scroll Reveal Animations (IntersectionObserver) ---
   const revealElements = document.querySelectorAll('.fade-in-up');
   if ('IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -87,14 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     revealElements.forEach(el => revealObserver.observe(el));
   } else {
     revealElements.forEach(el => el.classList.add('in-view'));
   }
 
-  // --- 4. Menu Filtering & Live Search ---
+  // --- 5. Menu Filtering & Live Search ---
   const menuTabs = document.querySelectorAll('.menu-tab-btn');
   const menuCards = document.querySelectorAll('.menu-card');
   const searchInput = document.getElementById('menuSearchInput');
@@ -147,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filterMenu();
   });
 
-  // --- 5. Interactive WhatsApp Quick Order Basket / Cart ---
+  // --- 6. Interactive WhatsApp Quick Order Basket / Cart ---
   const cartToggleBtns = document.querySelectorAll('.cart-toggle-trigger');
   const orderDrawerBackdrop = document.getElementById('orderDrawerBackdrop');
   const orderDrawer = document.getElementById('orderDrawer');
@@ -159,12 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartBadges = document.querySelectorAll('.cart-badge');
   const sendWhatsAppOrderBtn = document.getElementById('sendWhatsAppOrderBtn');
 
-  // Shop WhatsApp Number (Pilibhit)
   const SHOP_PHONE = '919412078654';
-
   let cart = [];
 
-  // Try loading cart from localStorage
   try {
     const saved = localStorage.getItem('badnaam_cart');
     if (saved) cart = JSON.parse(saved);
@@ -184,16 +196,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-    // Update badges
     cartBadges.forEach(badge => {
       badge.textContent = totalItems;
       badge.style.display = totalItems > 0 ? 'flex' : 'none';
-      // subtle bounce animation
       badge.style.transform = 'scale(1.3)';
       setTimeout(() => { badge.style.transform = 'scale(1)'; }, 200);
     });
 
-    // Update Drawer Contents
     if (orderDrawerItems) {
       if (cart.length === 0) {
         if (orderDrawerEmpty) orderDrawerEmpty.style.display = 'block';
@@ -217,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `).join('');
 
-        // Attach listeners for +/-
         orderDrawerItems.querySelectorAll('.btn-qty-minus').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
@@ -268,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
   orderDrawerClose?.addEventListener('click', closeOrderDrawer);
   orderDrawerBackdrop?.addEventListener('click', closeOrderDrawer);
 
-  // Add To Order Buttons in Menu Cards
   document.querySelectorAll('.btn-add-order').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -287,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
       saveCart();
       updateCartUI();
 
-      // Button feedback
       const originalText = btn.innerHTML;
       btn.innerHTML = `<span>✓ Added</span>`;
       btn.style.background = 'var(--color-veg)';
@@ -302,7 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Send Order via WhatsApp
   sendWhatsAppOrderBtn?.addEventListener('click', () => {
     if (cart.length === 0) return;
 
@@ -323,103 +328,100 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open(`https://wa.me/${SHOP_PHONE}?text=${encoded}`, '_blank');
   });
 
-  // Initial cart UI render
   updateCartUI();
 
-  // --- 6. Gallery Filtering & Fullscreen Lightbox Modal ---
-  const galleryTabs = document.querySelectorAll('.gallery-tab-btn');
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  const lightboxModal = document.getElementById('lightboxModal');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const lightboxCaption = document.getElementById('lightboxCaption');
-  const lightboxSub = document.getElementById('lightboxSub');
-  const lightboxClose = document.getElementById('lightboxClose');
-  const lightboxPrev = document.getElementById('lightboxPrev');
-  const lightboxNext = document.getElementById('lightboxNext');
+  // --- 7. Video Story Modal ---
+  const videoPlayTrigger = document.getElementById('videoPlayTrigger');
+  const storyVideoModal = document.getElementById('storyVideoModal');
+  const storyVideoClose = document.getElementById('storyVideoClose');
 
-  let currentGalleryIndex = 0;
-  let activeGalleryItems = Array.from(galleryItems);
-
-  // Filter gallery
-  galleryTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      galleryTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const cat = tab.getAttribute('data-gallery-category');
-
-      activeGalleryItems = [];
-      galleryItems.forEach(item => {
-        const itemCat = item.getAttribute('data-category') || '';
-        if (cat === 'all' || itemCat.includes(cat)) {
-          item.style.display = 'block';
-          activeGalleryItems.push(item);
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    });
-  });
-
-  // Open Lightbox
-  const showLightboxImage = (index) => {
-    if (activeGalleryItems.length === 0) return;
-    if (index < 0) index = activeGalleryItems.length - 1;
-    if (index >= activeGalleryItems.length) index = 0;
-    currentGalleryIndex = index;
-
-    const item = activeGalleryItems[currentGalleryIndex];
-    const imgUrl = item.getAttribute('data-full') || item.querySelector('img')?.src;
-    const title = item.getAttribute('data-title') || item.querySelector('.gallery-item-title')?.textContent;
-    const desc = item.getAttribute('data-desc') || item.querySelector('.gallery-item-sub')?.textContent;
-
-    if (lightboxImg) lightboxImg.src = imgUrl;
-    if (lightboxCaption) lightboxCaption.textContent = title || '';
-    if (lightboxSub) lightboxSub.textContent = desc || '';
-
-    lightboxModal?.classList.add('active');
+  const openStoryModal = () => {
+    storyVideoModal?.classList.add('active');
     document.body.style.overflow = 'hidden';
   };
 
-  galleryItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const idx = activeGalleryItems.indexOf(item);
-      showLightboxImage(idx >= 0 ? idx : 0);
-    });
-  });
-
-  const closeLightbox = () => {
-    lightboxModal?.classList.remove('active');
+  const closeStoryModal = () => {
+    storyVideoModal?.classList.remove('active');
     document.body.style.overflow = '';
   };
 
-  lightboxClose?.addEventListener('click', closeLightbox);
-  lightboxPrev?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    showLightboxImage(currentGalleryIndex - 1);
-  });
-  lightboxNext?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    showLightboxImage(currentGalleryIndex + 1);
+  videoPlayTrigger?.addEventListener('click', openStoryModal);
+  storyVideoClose?.addEventListener('click', closeStoryModal);
+  storyVideoModal?.addEventListener('click', (e) => {
+    if (e.target === storyVideoModal) closeStoryModal();
   });
 
-  lightboxModal?.addEventListener('click', (e) => {
-    if (e.target === lightboxModal) closeLightbox();
-  });
+  // --- 8. Ambient Sound Synthesis (Indian Sitar / Tanpura Chime) ---
+  const soundToggleBtn = document.getElementById('soundToggleBtn');
+  let audioCtx = null;
+  let isSoundPlaying = false;
+  let ambientOscillator = null;
 
-  // Keyboard navigation for Lightbox & Drawers
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeLightbox();
-      closeOrderDrawer();
-      closeMobileMenu();
+  const playIndianAmbientChord = () => {
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (isSoundPlaying) {
+        if (audioCtx.state === 'running') {
+          audioCtx.suspend();
+        }
+        isSoundPlaying = false;
+        soundToggleBtn?.classList.remove('playing');
+        if (soundToggleBtn) soundToggleBtn.innerHTML = `
+          <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+        `;
+        return;
+      }
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      // Play soft harmonized Indian Tanpura chord (Sa - Pa: D3, A3, D4)
+      const freqs = [146.83, 220.00, 293.66];
+      freqs.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = idx === 1 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.04 / (idx + 1), audioCtx.currentTime + 1.2);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+
+        // fade out gently after 8 seconds
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 8);
+        setTimeout(() => { osc.stop(); }, 8500);
+      });
+
+      isSoundPlaying = true;
+      soundToggleBtn?.classList.add('playing');
+      if (soundToggleBtn) soundToggleBtn.innerHTML = `
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      `;
+
+      setTimeout(() => {
+        isSoundPlaying = false;
+        soundToggleBtn?.classList.remove('playing');
+        if (soundToggleBtn) soundToggleBtn.innerHTML = `
+          <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+        `;
+      }, 8500);
+
+    } catch (e) {
+      console.warn('Audio synthesis not supported or blocked by browser', e);
     }
-    if (lightboxModal?.classList.contains('active')) {
-      if (e.key === 'ArrowLeft') showLightboxImage(currentGalleryIndex - 1);
-      if (e.key === 'ArrowRight') showLightboxImage(currentGalleryIndex + 1);
-    }
-  });
+  };
 
-  // --- 7. Catering / Bulk Order Contact Form ---
+  soundToggleBtn?.addEventListener('click', playIndianAmbientChord);
+
+  // --- 9. Catering / Bulk Order Form ---
   const cateringForm = document.getElementById('cateringInquiryForm');
   const formSuccess = document.getElementById('formSuccessMessage');
 
@@ -438,13 +440,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Show friendly success confirmation
     if (formSuccess) {
       formSuccess.style.display = 'flex';
       formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // Prefill WhatsApp link for one-tap submission
     let waText = `*New Catering / Bulk Mithai Inquiry - Badnaam Lassi Pilibhit*\n`;
     waText += `👤 *Name:* ${name}\n`;
     waText += `📞 *Phone:* ${phone}\n`;
@@ -461,5 +461,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     cateringForm.reset();
+  });
+
+  // Keyboard navigation for Drawers and Modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeStoryModal();
+      closeOrderDrawer();
+      closeMobileMenu();
+    }
   });
 });
